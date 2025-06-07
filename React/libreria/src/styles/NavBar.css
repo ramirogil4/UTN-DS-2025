@@ -1,0 +1,53 @@
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 80px;
+  width: 100%;
+  background-color: orange;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  min-height: 80px;
+  max-height: 80px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-buttons li {
+  list-style: none;
+}
+
+.nav-buttons a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.nav-buttons a:hover {
+  transform: scale(1.1);
+}
+
+.logo-cuspide {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.user-nav-item {
+  margin-left: auto;
+  margin-right: 40px;
+}
+

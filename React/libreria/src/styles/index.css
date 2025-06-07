@@ -1,0 +1,18 @@
+.container {
+  min-height: 100vh;
+  min-width: 100vw;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(rgba(224,231,255,0.85), rgba(240,240,240,0.85)),
+              url('/images/img4-cuspide.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 6px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;     
+  text-align: center;
+}
