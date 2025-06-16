@@ -1,0 +1,37 @@
+footer{
+    background-color: orange;
+    padding: 15px;
+}
+
+.footer h2{
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.footer-links{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.footer a:hover{
+    transform: scale(1.1);
+}
+
+.footer-links img{
+    width: 30px;
+    height: 30px;
+}
+
+a{
+    color: black !important;
+    text-decoration: none !important; 
+}
+
+footer p{
+    display: flex;
+    justify-content: center;
+}
