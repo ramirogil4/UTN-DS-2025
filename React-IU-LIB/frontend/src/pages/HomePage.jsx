@@ -2,12 +2,16 @@ import CarrouselComponent from "../components/Carrousel.jsx";
 import BookCard from "../components/BookCards.jsx";
 import SeccionXLibros from "../data/SeccionLibros.js";
 import Buttons from "../components/Button.jsx";
+import SearchBar from "../components/SearchBar.jsx";
 import '../styles/HomePage.css';
 
-function HomePage() {
+export default function HomePage() {
   return (
     <div>
         <CarrouselComponent />
+        <div className="search-books">
+            <SearchBar />
+        </div>
         <div className="container-buttons">
             <Buttons />
         </div>
@@ -20,5 +24,3 @@ function HomePage() {
     </div>
   );
 }
-
-export default HomePage;

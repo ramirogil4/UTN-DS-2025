@@ -2,7 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import '../styles/SignUpPage.css';
 
-function SignUp() {
+export default function SignUp() {
   return (
     <div className='contact-page'>
     <Form className='form-container'>
@@ -71,4 +71,3 @@ function SignUp() {
   );
 }
 
-export default SignUp;

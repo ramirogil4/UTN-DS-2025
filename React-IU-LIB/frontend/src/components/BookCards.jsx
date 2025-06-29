@@ -2,7 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import '../styles/BookCards.css';
 
-function BookCard({ libro }) {
+export default function BookCard({ libro }) {
   return (
     <Card style={{ width: '18rem', height: '35rem'}} className="book-card">
         <div className="book-card-content">
@@ -18,5 +18,3 @@ function BookCard({ libro }) {
     </Card>
   );
 }
-
-export default BookCard;

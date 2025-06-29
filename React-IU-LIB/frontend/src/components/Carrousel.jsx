@@ -3,7 +3,7 @@ import img4 from '../assets/img4-cuspide.jpg';
 import img5 from '../assets/img5-cuspide.jpg';
 import '../styles/Carrousel.css';
 
-function CarrouselComponent() {
+export default function CarrouselComponent() {
   return (
     <div className='carrousel-container'>
     <Carousel>
@@ -33,5 +33,3 @@ function CarrouselComponent() {
     </div>
   );
 }
-
-export default CarrouselComponent;

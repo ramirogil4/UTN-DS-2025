@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import '../styles/Button.css'; 
 
-function Buttons() {
+export default function Buttons() {
   return (
     <>
         <Button className="button" as={Link} to="/cienciaficcion">
@@ -20,5 +20,3 @@ function Buttons() {
     </>
   );
 }
-
-export default Buttons;

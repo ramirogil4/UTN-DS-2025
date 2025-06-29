@@ -10,21 +10,25 @@ const seccionMap = {
   clasicosnacionales: "ClasicosNacionales"
 };
 
-function CatalogPage() {
-    const { seccion } = useParams();
-    const key = seccionMap[seccion];
-    const libros = SeccionXLibros[key] || [];
+export default function CatalogPage({ librosAgregados = [] }) {
+  const { seccion } = useParams();
+  const key = seccionMap[seccion];
+  const librosOriginales = SeccionXLibros[key] || [];
+
+  const librosAgregadosFiltrados = librosAgregados.filter(
+    (libro) => libro.genero === seccion
+  );
+
+  const libros = [...librosOriginales, ...librosAgregadosFiltrados];
 
   return (
     <div className="book-section">
       <h2 className="section-title">{key || "Sección no encontrada"}</h2>
       <div className="books-list">
-        {libros.map((libro, idx) => (
-          <BookCards key={idx} libro={libro} />
+        {libros.map((libro, index) => (
+          <BookCards key={libro.id || index} libro={libro} />
         ))}
       </div>
     </div>
   );
 }
-
-export default CatalogPage;

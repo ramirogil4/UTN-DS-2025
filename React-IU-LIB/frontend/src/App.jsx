@@ -1,28 +1,39 @@
-import HomePage from './pages/HomePage.jsx'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import NavBarComponent from "./components/NavBar.jsx";
-import Footer from "./components/Footer.jsx";
-import CatalogPage from './pages/CatalogPage.jsx';
-import ContactPage from './pages/ContactPage.jsx';
-import SignUp from './pages/SignUpPage.jsx';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+import HomePage from './pages/HomePage';
+import CatalogPage from './pages/CatalogPage';
+import ContactPage  from './pages/ContactPage';
+import SignUp from './pages/SignUpPage';
+import Layout from './components/Layout'; 
+import Results from './pages/Results';
+import AddBook from './pages/AddBookPage';
+import { useState } from 'react';
+
 
 function App() {
+  const [librosAgregados, setLibrosAgregados] = useState([]);
+
+  const agregarLibro = (libro) => {
+    setLibrosAgregados(prev => [...prev, libro]);
+  };
+
   return (
-    <>
     <BrowserRouter>
-    <NavBarComponent/>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/contacto" element={<ContactPage />} />
-        <Route path="/register" element={<SignUp />} />
-        <Route path="/:seccion" element={<CatalogPage />} />
+        <Route path="/" element={<Layout><HomePage /></Layout>} />
+        <Route path="/contacto" element={<Layout><ContactPage /></Layout>} />
+        <Route path="/register" element={<Layout><SignUp /></Layout>} />
+        <Route
+          path="/:seccion"
+          element={<Layout><CatalogPage librosAgregados={librosAgregados} /></Layout>}
+        />
+        <Route path="/results" element={<Layout><Results librosAgregados={librosAgregados} /></Layout>} />
+        <Route path="/add" element={<Layout><AddBook nuevoLibro={agregarLibro} /></Layout>} />
       </Routes>
-      <Footer />
     </BrowserRouter>
-    </>
-  )
+  );
 }
 
-export default App
+export default App;
+

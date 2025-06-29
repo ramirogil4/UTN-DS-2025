@@ -5,8 +5,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Dropdown from 'react-bootstrap/Dropdown';
 import '../styles/NavBar.css';
 import { useLocation, Link } from "react-router-dom";
+import addIcon from '../assets/add-icon.svg';
 
-function NavBarComponent() {
+export default function NavBarComponent() {
   const location = useLocation();
   return (
     <Navbar expand="lg" className="nav-bar-contentainer">
@@ -25,6 +26,10 @@ function NavBarComponent() {
               <NavDropdown.Item as={Link} to="/infantil">Infantíl</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/clasicosnacionales">Clásicos Nacionales</NavDropdown.Item>
             </NavDropdown>
+            <Nav.Link as={Link} to="/add">Agregar Libro</Nav.Link>
+          </Nav>
+          <Nav>
+            
           </Nav>
           <Nav className=''>
             <Nav.Link as={Link} to="/register">
@@ -37,4 +42,3 @@ function NavBarComponent() {
   );
 }
 
-export default NavBarComponent;

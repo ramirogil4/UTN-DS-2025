@@ -1,0 +1,21 @@
+.results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.results-header {
+    margin: 20px
+
+}
+
+.results-body{
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+

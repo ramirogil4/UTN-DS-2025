@@ -2,7 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import '../styles/ContactPage.css';
 
-function ContactForm() {
+export default function ContactPage() {
   return (
     <div className='contact-page'>
     <Form className='form-container'>
@@ -26,5 +26,3 @@ function ContactForm() {
     </div>
   );
 }
-
-export default ContactForm;
