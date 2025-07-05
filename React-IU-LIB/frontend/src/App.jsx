@@ -8,8 +8,8 @@ import SignUp from './pages/SignUpPage';
 import Layout from './components/Layout'; 
 import Results from './pages/Results';
 import AddBook from './pages/AddBookPage';
+import CommentsPage from './pages/CommentsPage';
 import { useState } from 'react';
-
 
 function App() {
   const [librosAgregados, setLibrosAgregados] = useState([]);
@@ -30,6 +30,7 @@ function App() {
         />
         <Route path="/results" element={<Layout><Results librosAgregados={librosAgregados} /></Layout>} />
         <Route path="/add" element={<Layout><AddBook nuevoLibro={agregarLibro} /></Layout>} />
+        <Route path="/comments" element={<Layout><CommentsPage /></Layout>} />
       </Routes>
     </BrowserRouter>
   );

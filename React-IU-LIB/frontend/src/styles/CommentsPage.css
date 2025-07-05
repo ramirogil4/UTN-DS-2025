@@ -1,0 +1,52 @@
+/* Título principal */
+.comments-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.comments-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+
+.comment-container {
+  flex: 0 0 300px;
+}
+
+
+.comment-container .card {
+  height: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comment-container .card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.comment-container .card-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.comment-container .card-subtitle {
+  font-size: 14px;
+}
+
+.comment-container .card-text {
+  line-height: 1.5;
+}
+
+.comments-title {
+    display: flex;
+    justify-content: center;
+    margin: 15px;
+}

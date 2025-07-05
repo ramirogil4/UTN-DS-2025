@@ -12,7 +12,7 @@
   align-items: center;
 }
 
-/* Contenedor del formulario centrado */
+
 .add-book-container {
   display: flex;
   flex-direction: column;
@@ -30,7 +30,6 @@
 .add-book-container h1 {
   font-size: 24px;
   margin-bottom: 16px;
-  color: #333;
   text-align: center;
 }
 

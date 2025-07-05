@@ -1,0 +1,31 @@
+.tema-claro {
+  background-color: whitesmoke !important;
+  color: black !important;
+}
+
+.tema-claro .form-container {
+  background-color: whitesmoke !important;
+  color: black !important;
+}
+
+.tema-claro .add-book-container {
+    background-color: whitesmoke !important
+}
+
+.tema-oscuro {
+  background-color: #222831 !important;
+  color: white !important;
+}
+
+.tema-oscuro .form-container {
+  background-color: #222831 !important;
+  color: white !important;
+}
+
+.tema-oscuro .form-container h1 {
+    color: white !important
+}
+
+.tema-oscuro .add-book-container {
+    background-color: #222831 !important
+}
