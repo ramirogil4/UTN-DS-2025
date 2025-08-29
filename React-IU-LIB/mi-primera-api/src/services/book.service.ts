@@ -1,39 +1,22 @@
-import { Book, CreateBookRequest, UpdateBookRequest } from '../types/book.types';
-//Lista de libros
-let books: Book[] = [
-  { id: 1, title: '1984', author: 'George Orwell', section: 'Ciencia Ficción' },
-  { id: 2, title: 'Dune', author: 'Frank Herbert', section: 'Ciencia Ficción' },
-  { id: 3, title: 'La guerra de los mundos', author: 'H.G. Wells', section: 'Ciencia Ficción' },
-  { id: 4, title: 'Fahrenheit 451', author: 'Ray Bradbury', section: 'Ciencia Ficción' },
-  { id: 5, title: 'Yo, robot', author: 'Isaac Asimov', section: 'Ciencia Ficción' },
-  { id: 6, title: 'La máquina del tiempo', author: 'H.G. Wells', section: 'Ciencia Ficción' },
-  { id: 7, title: 'Asesinato en el Expreso Oriente', author: 'Agatha Christie', section: 'Crimen' },
-  { id: 8, title: 'Muerte en el Nilo', author: 'Agatha Christie', section: 'Crimen' },
-  { id: 9, title: 'Perdida', author: 'Gillian Flynn', section: 'Crimen' },
-  { id: 10, title: 'La chica del tren', author: 'Paula Hawkings', section: 'Crimen' },
-  { id: 11, title: 'El asesinato de Roger Ackroyd', author: 'Agatha Christie', section: 'Crimen' },
-  { id: 12, title: 'El código Da Vinci', author: 'Dan Brown', section: 'Crimen' },
-  { id: 13, title: 'El Principito', author: 'Antoine de Saint-Exupéry', section: 'Infantil' },
-  { id: 14, title: 'Pinocho', author: 'Carlo Collodi', section: 'Infantil' },
-  { id: 15, title: 'Caperucita Roja', author: 'Charles Perrault', section: 'Infantil' },
-  { id: 16, title: 'Cenicienta', author: 'Charles Perrault', section: 'Infantil' },
-  { id: 17, title: 'Jack y las habichuelas mágicas', author: 'Joseph Jacobs', section: 'Infantil' },
-  { id: 18, title: 'El libro de la selva', author: 'Rudyard Kipling', section: 'Infantil' },
-  { id: 19, title: 'El Aleph', author: 'Jorge Luis Borges', section: 'Clásicos Nacionales' },
-  { id: 20, title: 'Martin Fierro', author: 'José Hernández', section: 'Clásicos Nacionales' },
-  { id: 21, title: 'Facundo', author: 'Domingo Faustino Sarmiento', section: 'Clásicos Nacionales' },
-  { id: 22, title: 'El túnel', author: 'Ernesto Sabato', section: 'Clásicos Nacionales' },
-  { id: 23, title: 'Rayuela', author: 'Julio Cortázar', section: 'Clásicos Nacionales' },
-  { id: 24, title: 'Ficciones', author: 'Jorge Luis Borges', section: 'Clásicos Nacionales' }
-];
-//Obtener todos los libros
+import prisma from "../config/prisma";
+import { Book } from "../generated/prisma";
+
+// Obtener todos los libros
 export async function getAllBooks(): Promise<Book[]> {
+  const books = await prisma.book.findMany({
+    orderBy: { id: 'asc' },
+    include: { author: true, genre: true }, 
+  });
   return books;
 }
 
-//Obtener un libro por ID
+// Obtener un libro por ID
 export async function getBookById(id: number): Promise<Book> {
-  const book = books.find(b => b.id === id);
+  const book = await prisma.book.findUnique({
+    where: { id },
+    include: { author: true, genre: true },
+  });
+
   if (!book) {
     const error = new Error('Book not found');
     (error as any).statusCode = 404;
@@ -42,15 +25,15 @@ export async function getBookById(id: number): Promise<Book> {
   return book;
 }
 
-
-//Obtener libros por sección
-export async function getBookBySection(section: string): Promise<Book[]> {
-  const filteredBooks = books.filter(
-    b => b.section.toLowerCase() === section.toLowerCase()
-  );
+// Obtener libros por género
+export async function getBookByGenreId(genreId: number): Promise<Book[]> {
+  const filteredBooks = await prisma.book.findMany({
+    where: { genreId },
+    include: { author: true, genre: true },
+  });
 
   if (filteredBooks.length === 0) {
-    const error = new Error(`No books found in section: ${section}`);
+    const error = new Error(`No books found with genreId: ${genreId}`);
     (error as any).statusCode = 404;
     throw error;
   }
@@ -58,39 +41,59 @@ export async function getBookBySection(section: string): Promise<Book[]> {
   return filteredBooks;
 }
 
+// Crear un nuevo libro
+export async function createBook(data: { title: string; authorId: number; genreId: number; }): Promise<Book> {
 
-//Crear un nuevo libro
-export async function createBook(bookData: CreateBookRequest): 
-Promise<Book> {
- const newBook: Book = {
-   id: Math.max(...books.map(b => b.id)) + 1,
-   ...bookData,
- };
- books.push(newBook);
- return newBook;
-}
-
-//Actualizar un libro existente
-export async function updateBook(id: number, updateData: 
-UpdateBookRequest): Promise<Book> {
- const bookIndex = books.findIndex(b => b.id === id);
- if (bookIndex === -1) {
-   const error = new Error('Book not found');
-   (error as any).statusCode = 404;
-   throw error;
- }
- books[bookIndex] = { ...books[bookIndex], ...updateData };
- return books[bookIndex];
-}
-
-//Eliminar un libro por ID
-export async function deleteBook(id: number): Promise<void> {
-  const bookIndex = books.findIndex(b => b.id === id);
-  if (bookIndex === -1) {
-    const error = new Error('Book not found');
-    (error as any).statusCode = 404;
+  //Verificar que el autor existe:
+  const authorExists  = await prisma.author.findUnique ({ where: { id: 
+data.authorId } });
+  if (!authorExists ) {
+    const error = new Error('Author not found' ) as any;
+    error.statusCode  = 404;
     throw error;
   }
-  books.splice(bookIndex, 1); 
+  // Crear el libro
+  return prisma.book.create({ data, include: { author: true } });
 }
 
+
+// Actualizar un libro existente
+export async function updateBook (id: number, data: Partial<Book>): 
+Promise<Book> {
+ if (data.authorId) {
+   const authorExists  = await prisma.author.findUnique ({ where: { 
+id: data.authorId } });
+   if (!authorExists ) {
+     const error = new Error('Author not found' ) as any;
+     error.statusCode  = 404;
+     throw error;
+   }
+ }
+ try {
+   return await prisma.book.update({ where: { id }, data, include: { 
+author: true } });
+ } catch (e: any) {
+   if (e.code === 'P2025') {
+     const error = new Error('Book not found') as any;
+     error.statusCode  = 404;
+     throw error;
+   }
+   throw e;
+ }
+}
+
+// Eliminar un libro por ID
+export async function deleteBook(id: number): Promise<void> {
+  try {
+    await prisma.book.delete({
+      where: { id },
+    });
+  } catch (e: any) {
+    if (e.code === 'P2025') {
+      const error = new Error('Book not found');
+      (error as any).statusCode = 404;
+      throw error;
+    }
+    throw e;
+  }
+}

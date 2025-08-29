@@ -1,23 +1,27 @@
 export interface Book {
   id: number;
   title: string;
-  author: string;
-  section: string;
+  authorId: number;
+  genreId: number; 
 }
+
 export interface CreateBookRequest {
   title: string;
-  author: string;
-  section: string;
+  authorId: number;
+  genreId: number;
 }
+
 export interface UpdateBookRequest {
   title?: string;
-  author?: string;
-  section?: string;
+  authorId?: number;
+  genreId?: number;
 }
+
 export interface BookResponse {
   book: Book;
-  message: string
+  message: string;
 }
+
 export interface BooksListResponse {
   books: Book[];
   message: string;
