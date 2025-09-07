@@ -5,9 +5,21 @@ import { genreRoutes } from './routes/genre.routes';
 import { handleError } from './middlewares/error.middleware';
 import { logRequest } from './middlewares/logger.middleware';
 import { authorRoutes } from './routes/author.routes';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const PORT = process.env.PORT || 3000;
 const app = express();
-const PORT = 3000;
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+};
+
+
 // Middlewares globales
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(logRequest);
 // Routes
