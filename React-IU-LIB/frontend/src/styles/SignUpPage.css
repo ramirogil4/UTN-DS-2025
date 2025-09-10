@@ -39,3 +39,17 @@
     background-size: cover;
     background-position: center;
 }
+
+.login-link-container {
+    color: #333 !important; /* celeste */
+    text-decoration: none;
+    font-weight: 400 !important;
+    display: inline-block;
+    margin-top: 16px;
+
+}
+
+.login-link-container:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

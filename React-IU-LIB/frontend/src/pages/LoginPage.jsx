@@ -1,0 +1,90 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import '../styles/LoginPage.css';
+
+export default function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({ email: '', password: '' });
+
+  const handleRegisterNavigate = () => {
+    navigate('/register');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    let valid = true;
+    const newErrors = { email: '', password: '' };
+
+    if (!email.trim()) {
+      newErrors.email = 'El email es requerido';
+      valid = false;
+    }
+
+    if (!password.trim()) {
+      newErrors.password = 'La contraseña es requerida';
+      valid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (valid) {
+      navigate('/home'); // redirige a /home si todo está completo
+    }
+  };
+
+  return (
+    <div className='contact-page'>
+      <Form className='form-container' onSubmit={handleSubmit}>
+        <fieldset>
+          <h1>Iniciar Sesión</h1>
+
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="emailInput">Email</Form.Label>
+            <Form.Control 
+              type="email" 
+              id="emailInput" 
+              placeholder="Ingresa tu email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {errors.email && (
+              <div style={{ color: 'red', marginTop: '5px' }}>{errors.email}</div>
+            )}
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="passwordInput">Contraseña</Form.Label>
+            <Form.Control 
+              type="password" 
+              id="passwordInput" 
+              placeholder="Ingresa tu contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {errors.password && (
+              <div style={{ color: 'red', marginTop: '5px' }}>{errors.password}</div>
+            )}
+          </Form.Group>
+
+          <Button className='button-form' type="submit">Ingresar</Button>
+
+          <div style={{ textAlign: 'center', marginTop: '15px' }}>
+            <Button 
+              variant="link"
+              className="register-button"
+              onClick={handleRegisterNavigate}
+            >
+              ¿No tenes cuenta? Registrate
+            </Button>
+          </div>
+        </fieldset>
+      </Form>
+    </div>
+  );
+}

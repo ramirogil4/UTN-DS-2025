@@ -9,6 +9,7 @@ import Layout from './components/Layout';
 import Results from './pages/Results';
 import AddBook from './pages/AddBookPage';
 import CommentsPage from './pages/CommentsPage';
+import LoginPage from './pages/LoginPage';
 import { useState } from 'react';
 
 function App() {
@@ -21,9 +22,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout><HomePage /></Layout>} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/home" element={<Layout><HomePage /></Layout>} />
         <Route path="/contacto" element={<Layout><ContactPage /></Layout>} />
-        <Route path="/register" element={<Layout><SignUp /></Layout>} />
+        <Route path="/register" element={<SignUp />} />
         <Route
           path="/:seccion"
           element={<Layout><CatalogPage librosAgregados={librosAgregados} /></Layout>}
