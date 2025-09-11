@@ -3,9 +3,20 @@ export interface User {
   name: string;
   surname: string;
   email: string;
+  role : 'ADMIN' | 'USER';
   password: string;
   dateOfBirth: Date;
   genreId: number;
+}
+
+export interface UserData {
+  id: number;
+  name: string;
+  surname: string;
+  email: string;
+  role: 'USER' | 'ADMIN';
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface CreateUserRequest {
@@ -27,11 +38,12 @@ export interface UpdateUserRequest {
 }
 
 export interface UserResponse {
-  user: User;
+  user: UserData;
   message: string;
 }
 
 export interface UsersListResponse {
-  users: User[];
+  users: UserData[];
+  total: number;
   message: string;
 }

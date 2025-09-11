@@ -1,70 +1,85 @@
-import prisma from "../config/prisma";
-import { User } from "../generated/prisma"; 
+import prisma from '../config/prisma';
+import bcrypt from 'bcrypt';
+import { CreateUserRequest , UpdateUserRequest , UserData  } from 
+'../types/user.types' ;
 
 //Obtener todos los usuarios
-export async function getAllUsers(): Promise<User[]> {
-  const users = await prisma.user.findMany({
-    orderBy: { id: 'asc' },
-    include: { genre: true }, 
-  });
-  return users;
+export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
+   const users = await prisma.user.findMany({
+       orderBy: { id: "asc" },
+       take: limit,
+       omit: { password: true }
+   });
+   return users;
 }
 
 //Obtener un usuario por ID
-export async function getUserById(id: number): Promise<User> {
-  const user = await prisma.user.findUnique({
-    where: { id },
-    include: { genre: true },
-    }) 
-  if (!user) {
-    const error = new Error('User not found');
-    (error as any).statusCode = 404;
-    throw error;
-  }
-  return user;
+export async function getUserById(id: number): Promise<UserData> {
+   const user = await prisma.user.findUnique(
+      { where: { id }, omit: { password: true }});
+   if (!user) {
+       const error = new Error('Usuario no encontrado') as any;
+       error.statusCode = 404;
+       throw error;
+   }
+   return user;
 }
 
 //Crear un nuevo usuario
-export async function createUser(data: { name: string, surname: string, email: string, password: string, dateOfBirth: Date, genreId: number}): Promise<User> {
-  //Verificar que el autor existe:
-  const genreExists  = await prisma.genre.findUnique ({ where: { id: 
-data.genreId } });
-  if (!genreExists ) {
-    const error = new Error('Genre not found' ) as any;
-    error.statusCode  = 404;
-    throw error;
-  }
-  // Crear el libro
-  return prisma.user.create({ data, include: { genre: true } });
-}
-
-//Actualizar un usuario existente
-export async function updateUser(id: number, data: Partial<User>): Promise<User>{
- try {
-   return await prisma.user.update({ where: { id }, data, include: { genre: true } });
- } catch (e: any) {
-   if (e.code === 'P2025') {
-     const error = new Error('User not found') as any;
-     error.statusCode  = 404;
-     throw error;
+export async function createUser(data: CreateUserRequest): Promise<UserData> {
+   const exists = await prisma.user.findUnique({ where: { email: data.email }});
+   if (exists) {
+       const error = new Error('Email ya registrado') as any;
+       error.statusCode = 409;
+       throw error;
    }
-   throw e;
- }
+   const hashedPassword = await bcrypt.hash(data.password, 10);
+   // 3. Crear usuario
+   const user = await prisma.user.create({
+       data: {
+           ...data,
+           password: hashedPassword
+       },
+       omit: { password: true }
+   });
+   return user;
 }
 
-//Eliminar un usuario por ID
+//Actualizar usuario
+export async function updateUser(id: number, data: UpdateUserRequest): 
+Promise<UserData> {
+   try {
+       const updateData: Partial<UpdateUserRequest> = { ...data };
+       if (data.password) {
+           updateData.password = await bcrypt.hash(data.password, 10);
+       } else {
+           delete (updateData as any).password;
+       }
+       return await prisma.user.update({
+           where: { id },
+           data: updateData,
+           omit: { password: true }
+       });
+   } catch (e: any) {
+       if (e.code === 'P2025') {
+           const error = new Error('Usuario no encontrado') as any;
+           error.statusCode = 404;
+           throw error;
+       }
+       throw e;
+   }
+}
+
+//Eliminar usuario
 export async function deleteUser(id: number): Promise<void> {
-  try {
-    await prisma.user.delete({
-      where: { id },
-    });
-  } catch (e: any) {
-    if (e.code === 'P2025') {
-      const error = new Error('User not found');
-      (error as any).statusCode = 404;
-      throw error;
-    }
-    throw e;
-  }
+   try {
+       await prisma.user.delete({ where: { id } });
+   } catch (e: any) {
+       if (e.code === 'P2025') {
+           const error = new Error('Usuario no encontrado') as any;
+           error.statusCode = 404;
+           throw error;
+       }
+       throw e;
+   }
 }
-

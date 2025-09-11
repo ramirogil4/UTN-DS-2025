@@ -19,7 +19,8 @@ model User {
   name        String    @db.VarChar(50)
   surname     String    @db.VarChar(50)
   email       String    @unique
-  password    String    @db.VarChar(20)
+  role        Role      @default(USER)
+  password    String    @db.VarChar(255)
   dateOfBirth DateTime
   createdAt   DateTime  @default(now())
   genreId     Int
@@ -49,7 +50,10 @@ model Author {
   books      Book[] //Un autor puede pertenecer a muchos libros
 }
 
-
+enum Role {
+  ADMIN
+  USER
+}
 
 
 
