@@ -1,30 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getToken, clearToken } from '../helpers/auth';
 
-export function useFetch(url) {
-  const [datos, setDatos] = useState(null);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const obtenerDatos = async () => {
-      try {
-        setCargando(true);
-        setError(null);
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error('Error en la petición');
-        }
-        const resultado = await response.json();
-        setDatos(resultado);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setCargando(false);
-      }
-    };
-
-    obtenerDatos();
-  }, [url]);
-
-  return { datos, cargando, error };
+export function useFetch(url, options = {}, { requireAuth = false } = {}) {
+   const [data, setData] = useState(null);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+   const navigate = useNavigate();
+   useEffect(() => {
+       const controller = new AbortController();
+       async function fetchData() {
+           setLoading(true);
+           setError(null);
+           try {
+               const token = getToken();
+               const headers = {
+                   ...(options.headers || {}),
+                   ...(token ? { Authorization: `Bearer ${token}` } : {})
+               };
+               const res = await fetch(url, { ...options, headers, signal: controller.signal });
+               if (res.status === 401 && requireAuth) {
+                   clearToken();
+                   navigate("/");
+                   return;
+               }
+               if (!res.ok) throw new Error(res.statusText);
+               const json = await res.json();
+               setData(json);
+           } catch (err) {
+               if (err.name !== "AbortError") setError(err);
+           } finally {
+               setLoading(false);
+           }
+       }
+       fetchData();
+       return () => controller.abort();
+   }, [url]);
+   return { data, loading, error };
 }

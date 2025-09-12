@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { setToken } from '../helpers/auth'; 
 import '../styles/LoginPage.css';
 
 export default function Login() {
@@ -15,7 +16,7 @@ export default function Login() {
     navigate('/register');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let valid = true;
@@ -33,8 +34,22 @@ export default function Login() {
 
     setErrors(newErrors);
 
-    if (valid) {
-      navigate('/home'); // redirige a /home si todo está completo
+    if (!valid) return;
+
+    try {
+      const res = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) throw new Error('Error en login');
+
+      const { data } = await res.json();
+      setToken(data.token); 
+      navigate('/home');  
+    } catch (err) {
+      alert('Login fallido');
     }
   };
 
