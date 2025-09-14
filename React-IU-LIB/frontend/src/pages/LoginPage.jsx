@@ -11,6 +11,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
+  const [loginError, setLoginError] = useState('');
 
   const handleRegisterNavigate = () => {
     navigate('/register');
@@ -21,6 +22,7 @@ export default function Login() {
 
     let valid = true;
     const newErrors = { email: '', password: '' };
+    setLoginError(''); 
 
     if (!email.trim()) {
       newErrors.email = 'El email es requerido';
@@ -49,7 +51,7 @@ export default function Login() {
       setToken(data.token); 
       navigate('/home');  
     } catch (err) {
-      alert('Login fallido');
+      setLoginError('Correo o contraseña inválidos');
     }
   };
 
@@ -84,6 +86,9 @@ export default function Login() {
             />
             {errors.password && (
               <div style={{ color: 'red', marginTop: '5px' }}>{errors.password}</div>
+            )}
+            {loginError && (
+              <div style={{ color: 'red', marginTop: '5px' }}>{loginError}</div>
             )}
           </Form.Group>
 
