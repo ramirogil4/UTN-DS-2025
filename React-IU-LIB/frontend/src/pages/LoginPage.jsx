@@ -12,6 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
   const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegisterNavigate = () => {
     navigate('/register');
@@ -75,15 +76,35 @@ export default function Login() {
             )}
           </Form.Group>
 
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3" style={{ position: 'relative' }}>
             <Form.Label htmlFor="passwordInput">Contraseña</Form.Label>
             <Form.Control 
-              type="password" 
+              type={showPassword ? "text" : "password"} 
               id="passwordInput" 
               placeholder="Ingresa tu contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '38px',
+                border: 'none',
+                background: 'transparent',
+                padding: 0,
+                cursor: 'pointer'
+              }}
+            >
+              <img 
+                src="https://img.icons8.com/?size=100&id=85130&format=png&color=000000" 
+                alt="Mostrar/Ocultar contraseña" 
+                style={{ width: '20px', height: '20px' }}
+              />
+            </button>
+
             {errors.password && (
               <div style={{ color: 'red', marginTop: '5px' }}>{errors.password}</div>
             )}
