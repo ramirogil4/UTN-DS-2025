@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+ # Frontend React
+ frontend:
+   build:
+     context: ./frontend
+     dockerfile : Dockerfile
+   container_name : app_frontend
+   env_file:
+     - frontend/.env
+   ports:
+     - "5173:5173"
+   depends_on :
+     - backend
+   volumes:
+     - ./frontend:/app
+     - /app/node_modules
+   networks:
+     - app-network
+ # Backend Node.js
+ backend:
+   build:
+     context: ./mi-primera-api
+     dockerfile : Dockerfile
+   container_name : app_backend
+   env_file:
+     - ./mi-primera-api/.env
+   ports:
+     - "3000:3000"
+   depends_on :
+     - db
+   volumes:
+     - ./mi-primera-api:/app
+     - /app/node_modules
+   networks:
+     - app-network
+
+# Base de Datos PostgreSQL
+ db:
+   image: postgres:14-alpine
+   container_name : app_db
+   env_file:
+     - ./mi-primera-api/.env
+   ports:
+     - "5432:5432"
+   volumes:
+     - postgres_data:/var/lib/postgresql/data
+     - ./mi-primera-api/prisma/migrations:/docker-entrypoint-initdb.d
+   networks:
+     - app-network
+networks:
+ app-network :
+   driver: bridge
+volumes:
+ postgres_data :
+   driver: local
