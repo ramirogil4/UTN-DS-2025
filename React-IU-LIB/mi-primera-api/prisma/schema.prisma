@@ -23,6 +23,7 @@ model User {
   password    String    @db.VarChar(255)
   dateOfBirth DateTime
   createdAt   DateTime  @default(now())
+  gender      Gender
   genreId     Int
   genre       Genre   @relation(fields: [genreId], references: [id])
 }
@@ -55,6 +56,11 @@ enum Role {
   USER
 }
 
+enum Gender {
+  MASCULINO
+  FEMENINO
+  OTRO
+}
 
 
 

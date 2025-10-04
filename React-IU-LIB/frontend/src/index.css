@@ -1,0 +1,6 @@
+:root {
+    --primary-color: orange;        /* color principal */
+    --button-default-color: #00bfff; /* celeste default */
+    --button-secondary-color: whitesmoke; /* secundario */
+    --button-tertiary-color: black; /* terciario */
+}
