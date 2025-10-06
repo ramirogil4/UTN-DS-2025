@@ -5,6 +5,7 @@ export interface User {
   email: string;
   role : 'ADMIN' | 'USER';
   password: string;
+  gender: 'MASCULINO' | 'FEMENINO' | 'OTRO';
   dateOfBirth: Date;
   genreId: number;
 }
@@ -15,8 +16,11 @@ export interface UserData {
   surname: string;
   email: string;
   role: 'USER' | 'ADMIN';
+  gender: 'MASCULINO' | 'FEMENINO' | 'OTRO';
   createdAt: Date;
   updatedAt?: Date;
+  genreId: number;
+  dateOfBirth: Date;
 }
 
 export interface CreateUserRequest {
@@ -25,6 +29,7 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   dateOfBirth: Date;
+  gender: 'MASCULINO' | 'FEMENINO' | 'OTRO';
   genreId: number;
 }
 

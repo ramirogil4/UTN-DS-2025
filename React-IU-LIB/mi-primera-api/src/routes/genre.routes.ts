@@ -7,7 +7,7 @@ import { authenticate, authorize } from '../middlewares/auth.middleware';
 const router = Router();
 
 // GET /api/genres
-router.get('/', authenticate, authorize('ADMIN') ,genreController.getAllGenres);
+router.get('/', genreController.getAllGenres);
 
 // GET /api/genres/:id
 router.get('/:id', authenticate, authorize('ADMIN') ,genreController.getGenreById);

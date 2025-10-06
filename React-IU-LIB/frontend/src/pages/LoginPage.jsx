@@ -84,7 +84,7 @@ export default function LoginPage() {
         Ingresar
       </Button>
 
-      <Link to="/register" className="register-button">
+      <Link to="/signup" className="register-button">
         ¿No tenés cuenta? Registrate
       </Link>
     </AuthContainer>

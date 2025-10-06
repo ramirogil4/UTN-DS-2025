@@ -11,3 +11,4 @@ export async function login(req: Request<{}, {}, LoginRequest>, res: Response<Lo
        });
    } catch (error) { next(error); }
 }
+

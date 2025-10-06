@@ -1,164 +1,161 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom';
-import '../styles/SignUpPage.css';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Form } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { setToken } from "../helpers/auth";
+import { signupSchema } from "../validations/signupSchema";
+import { AuthContainer } from "../components/AuthContainer";
+import { AuthField } from "../components/AuthField";
 
-export default function SignUp() {
+
+import "../styles/SignUpPage.css";
+
+export default function SignUpPage() {
   const navigate = useNavigate();
+  const [genres, setGenres] = useState([]);
 
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    fechaNacimiento: '',
-    email: '',
-    password: '',
-    genero: '',
-    seccion: ''
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(signupSchema),
+    mode: "onChange",
   });
 
-  const [errors, setErrors] = useState({});
+  // Traer géneros desde backend
+  useEffect(() => {
+    fetch("http://localhost:3000/api/genres")
+      .then((res) => res.json())
+      .then((result) => setGenres(result.data))
+      .catch(console.error);
+  }, []);
 
-  const handleChange = (e) => {
-    const { id, value, name } = e.target;
-    if (name === 'genero') {
-      setFormData({ ...formData, genero: value });
-    } else if (id === 'Select') {
-      setFormData({ ...formData, seccion: value });
-    } else {
-      setFormData({ ...formData, [id]: value });
-    }
+  const onSubmit = async (data) => {
+    try {
+      console.log("Datos enviados al backend:", data);
+      const res = await fetch("http://localhost:3000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          surname: data.surname,
+          email: data.email,
+          password: data.password,
+          gender: data.gender,
+          dateOfBirth: new Date(data.dateOfBirth).toISOString(),
+          genreId: parseInt(data.genre, 10),
+        }),
+      });
 
-    // Limpiar error al escribir
-    setErrors((prev) => ({ ...prev, [id]: '' }));
-  };
+      const responseData = await res.json();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-    if (!formData.nombre.trim()) newErrors.TextInput = 'El nombre es requerido';
-    if (!formData.apellido.trim()) newErrors.TextInput2 = 'El apellido es requerido';
-    if (!formData.fechaNacimiento.trim()) newErrors.fechaNacimiento = 'La fecha de nacimiento es requerida';
-    if (!formData.email.trim()) newErrors.emailInput = 'El email es requerido';
-    if (!formData.password.trim()) newErrors.passwordInput = 'La contraseña es requerida';
-    if (!formData.genero.trim()) newErrors.genero = 'Selecciona un género';
-    if (!formData.seccion.trim()) newErrors.Select = 'Selecciona una sección favorita';
+      if (!res.ok || !responseData.data?.token) {
+        throw new Error(responseData.message || "No se pudo registrar el usuario");
+      }
 
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      navigate('/home'); // Redirige a /home si todo está completo
+      setToken(responseData.data.token);
+      navigate("/home");
+    } catch (err) {
+      setError("root", { type: "manual", message: err.message || "Error desconocido" });
     }
   };
 
   return (
-    <div className='contact-page'>
-      <Form className='form-container' onSubmit={handleSubmit}>
-        <fieldset>
-          <h1>Registro de usuario</h1>
+    <AuthContainer type="signup" onSubmit={handleSubmit(onSubmit)}>
+      <h1 className="signup-title">Registro de Usuario</h1>
 
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="TextInput">Nombre</Form.Label>
-            <Form.Control
-              id="TextInput"
-              placeholder="Nombre"
-              value={formData.nombre}
-              onChange={handleChange}
+      <AuthField
+        id="name"
+        type="text"
+        placeholder="Nombre"
+        registerField={register("name")}
+        error={errors.name?.message}
+      />
+      <AuthField
+        id="surname"
+        type="text"
+        placeholder="Apellido"
+        registerField={register("surname")}
+        error={errors.surname?.message}
+      />
+      <AuthField
+        id="email"
+        type="email"
+        placeholder="Email"
+        registerField={register("email")}
+        error={errors.email?.message}
+      />
+      <AuthField
+        id="password"
+        type="password"
+        placeholder="Contraseña"
+        registerField={register("password")}
+        error={errors.password?.message}
+      />
+      <AuthField
+        id="dateOfBirth"
+        type="date"
+        placeholder="Fecha de nacimiento"
+        registerField={register("dateOfBirth")}
+        error={errors.dateOfBirth?.message}
+      />
+
+      <Form.Group className="mb-3">
+        <Form.Label>Género</Form.Label>
+        <div>
+          {["MASCULINO", "FEMENINO", "OTRO"].map((g) => (
+            <Form.Check
+              key={g}
+              type="radio"
+              label={g.charAt(0) + g.slice(1).toLowerCase()}
+              value={g}
+              {...register("gender")}
+              onChange={() => clearErrors("gender")}
             />
-            {errors.TextInput && <div style={{ color: 'red', marginTop: '5px' }}>{errors.TextInput}</div>}
-          </Form.Group>
+          ))}
+        </div>
+        {errors.gender && <div className="field-error">{errors.gender.message}</div>}
+      </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="TextInput2">Apellido</Form.Label>
-            <Form.Control
-              id="TextInput2"
-              placeholder="Apellido"
-              value={formData.apellido}
-              onChange={handleChange}
-            />
-            {errors.TextInput2 && <div style={{ color: 'red', marginTop: '5px' }}>{errors.TextInput2}</div>}
-          </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Label>Género favorito</Form.Label>
+        <Form.Select
+          {...register("genre")}
+          onChange={(e) => {
+            setValue("genre", parseInt(e.target.value, 10), { shouldValidate: true });
+            clearErrors("genre");
+          }}
+        >
+          <option value="">Seleccioná tu género favorito</option>
+          {genres.map((g) => (
+            <option key={g.id} value={g.id}>
+              {g.name}
+            </option>
+          ))}
+        </Form.Select>
+        {errors.genre && <div className="field-error">{errors.genre.message}</div>}
+      </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="fechaNacimiento">Fecha de Nacimiento</Form.Label>
-            <Form.Control
-              type="date"
-              id="fechaNacimiento"
-              placeholder="Fecha de Nacimiento"
-              value={formData.fechaNacimiento}
-              onChange={handleChange}
-            />
-            {errors.fechaNacimiento && <div style={{ color: 'red', marginTop: '5px' }}>{errors.fechaNacimiento}</div>}
-          </Form.Group>
+      <Button type="submit" className="button-form" disabled={isSubmitting}>
+        {isSubmitting ? "Registrando..." : "Registrarme"}
+      </Button>
 
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="emailInput">Email</Form.Label>
-            <Form.Control
-              type="email"
-              id="emailInput"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            {errors.emailInput && <div style={{ color: 'red', marginTop: '5px' }}>{errors.emailInput}</div>}
-          </Form.Group>
+      {errors.root?.message && <div className="field-error">{errors.root.message}</div>}
 
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="passwordInput">Contraseña</Form.Label>
-            <Form.Control
-              type="password"
-              id="passwordInput"
-              placeholder="Contraseña"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            {errors.passwordInput && <div style={{ color: 'red', marginTop: '5px' }}>{errors.passwordInput}</div>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Género</Form.Label>
-            <div>
-              {['masculino', 'femenino', 'otro'].map((g) => (
-                <Form.Check
-                  key={g}
-                  type="radio"
-                  label={g.charAt(0).toUpperCase() + g.slice(1)}
-                  name="genero"
-                  id={`genero-${g}`}
-                  value={g}
-                  checked={formData.genero === g}
-                  onChange={handleChange}
-                />
-              ))}
-            </div>
-            {errors.genero && <div style={{ color: 'red', marginTop: '5px' }}>{errors.genero}</div>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="Select">Sección Favorita</Form.Label>
-            <Form.Select
-              id="Select"
-              value={formData.seccion}
-              onChange={handleChange}
-            >
-              <option value="" disabled hidden>Sección Favorita</option>
-              <option>Ciencia Ficción</option>
-              <option>Crimen</option>
-              <option>Infantil</option>
-              <option>Clásicos Nacionales</option>
-            </Form.Select>
-            {errors.Select && <div style={{ color: 'red', marginTop: '5px' }}>{errors.Select}</div>}
-          </Form.Group>
-
-          <Button className='button-form' type="submit">Registrarme</Button>
-
-          <div className="login-link-container">
-            <span className="login-link" onClick={() => navigate('/')}>
-              ¿Ya estás registrado? Inicia sesión
-            </span>
-          </div>
-        </fieldset>
-      </Form>
-    </div>
+      <p className="signup-register-link">
+        ¿Ya tenés cuenta?{" "}
+        <span
+          onClick={() => navigate("/")}
+          style={{ cursor: "pointer", color: "#0d6efd", textDecoration: "none" }}
+        >
+          Inicia Sesión
+        </span>
+      </p>
+    </AuthContainer>
   );
 }

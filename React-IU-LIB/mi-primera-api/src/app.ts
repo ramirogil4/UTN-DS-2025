@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { authRoutes } from './routes/auth.routes';
 import { bookRoutes  } from './routes/book.routes' ;
+import { genreRoutes } from './routes/genre.routes';
 import { userRoutes } from './routes/user.routes';
 import { handleError  } from './middlewares/error.middleware' ;
 import { logRequest  } from './middlewares/logger.middleware' ;
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(logRequest );
 
 app.use('/api/auth', authRoutes);
+app.use('/api/genres', genreRoutes);
 app.use('/api/books' , bookRoutes );
 app.use('/api/users', userRoutes);
 
