@@ -14,6 +14,7 @@ import "../styles/SignUpPage.css";
 export default function SignUpPage() {
   const navigate = useNavigate();
   const [genres, setGenres] = useState([]);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const {
     register,
@@ -29,7 +30,7 @@ export default function SignUpPage() {
 
   // Traer géneros desde backend
   useEffect(() => {
-    fetch("http://localhost:3000/api/genres")
+    fetch(`${API_URL}/genres`)
       .then((res) => res.json())
       .then((result) => setGenres(result.data))
       .catch(console.error);
@@ -38,7 +39,7 @@ export default function SignUpPage() {
   const onSubmit = async (data) => {
     try {
       console.log("Datos enviados al backend:", data);
-      const res = await fetch("http://localhost:3000/api/auth/signup", {
+      const res = await fetch(`${API_URL}/auth/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
