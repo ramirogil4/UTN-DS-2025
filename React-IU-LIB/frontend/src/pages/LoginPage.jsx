@@ -10,8 +10,6 @@ import { setToken } from "../helpers/auth";
 import "../styles/LoginPage.css";
 
 
-
-
 export default function LoginPage() {
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;

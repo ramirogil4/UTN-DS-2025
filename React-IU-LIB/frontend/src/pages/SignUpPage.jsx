@@ -39,7 +39,7 @@ export default function SignUpPage() {
   const onSubmit = async (data) => {
     try {
       console.log("Datos enviados al backend:", data);
-      const res = await fetch(`${API_URL}/auth/auth/signup`, {
+      const res = await fetch(`${API_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
