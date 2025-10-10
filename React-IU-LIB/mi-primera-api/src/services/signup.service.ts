@@ -2,7 +2,7 @@ import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SignupRequest, SignupResponse, UserData } from '../types/signup.types';
-import { Gender } from '../generated/prisma';
+import { Gender } from  '@prisma/client';
 
 export async function signup(data: SignupRequest): Promise<SignupResponse['data']> {
   //Verifico el tipo de género para evitar errores de asignación

@@ -1,5 +1,5 @@
 // src/services/auth.service.ts
-import prisma from '../config/prisma';
+import prisma from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt, { Secret, SignOptions } from 'jsonwebtoken';
 import { LoginRequest, LoginResponse, UserData } from '../types/auth.types';

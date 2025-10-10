@@ -1,5 +1,5 @@
 import prisma from "../config/prisma";
-import { Genre } from "../generated/prisma"; 
+import { Genre } from '@prisma/client'; 
 
 //Obtener todos los generos
 export async function getAllGenres(): Promise<Genre[]> {
