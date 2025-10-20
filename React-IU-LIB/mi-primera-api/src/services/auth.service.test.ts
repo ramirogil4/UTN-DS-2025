@@ -1,4 +1,4 @@
-import { login } from './auth.service'; // Asumo que la función está en auth.service
+import { login } from './auth.service';
 import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -21,7 +21,7 @@ jest.mock('jsonwebtoken', () => ({
 
 //Mock de variables de entorno
 const mockJwtSecret = 'test_secret_key';
-const mockJwtExpiresIn = 7200; // 1 hora
+const mockJwtExpiresIn = 7200;
 process.env.JWT_SECRET = mockJwtSecret;
 process.env.JWT_EXPIRES_IN = String(mockJwtExpiresIn);
 
